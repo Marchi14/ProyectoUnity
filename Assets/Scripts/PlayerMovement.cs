@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveInput = Vector3.zero;
     CharacterController characterController;
+    public float dashTime;
+    public float dashSpeed;
 
     private void Awake()
     {
@@ -26,7 +28,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        
+
+        if (Input.GetKeyDown(KeyCode.Q))
+            StartCoroutine(Dash());
+
         if (characterController.isGrounded)
         {
             jump = true;
@@ -49,5 +54,16 @@ public class PlayerMovement : MonoBehaviour
         
         moveInput.y += gravityScale * Time.deltaTime;
         characterController.Move(moveInput * Time.deltaTime);
+    }
+
+    IEnumerator Dash()
+    {
+        float startTime = Time.time;
+
+        while(Time.time < startTime + dashTime)
+        {
+            characterController.Move(moveInput * dashSpeed * Time.deltaTime);
+            yield return null;
+        }
     }
 }
